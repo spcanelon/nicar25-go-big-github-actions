@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         # provide something that can be iterated over
-        state: [ca, ia, ny]
+        state: [ca, ia, ny, pa]
     
     steps:
       - name: Hello world
