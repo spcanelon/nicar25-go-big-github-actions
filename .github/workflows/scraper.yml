@@ -36,6 +36,9 @@ jobs:
       - name: Scrape
         run: warn-scraper ${{ inputs.state }} --data-dir ./data/
 
+      - name: Save datestamp
+        run: date > ./data/latest-scrape.txt
+
       - name: Commit and push
         run: |
           git config user.name "GitHub Actions"
