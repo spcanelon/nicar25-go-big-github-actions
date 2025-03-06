@@ -51,6 +51,7 @@ jobs:
     # allows process to proceed linearly
     needs: scrape
     steps:
+      # cloning onto the blank computer
       - name: Checkout
         uses: actions/checkout@v4
 
