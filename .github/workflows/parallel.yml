@@ -78,3 +78,53 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add ./data/
           git commit -m "Latest data" && git push || true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: scrape
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.11"
+
+      # for Observable
+      - name: Install dependencies
+        run: npm install --prefix site
+
+      - name: Download data
+        uses: actions/download-artifact@v4
+        with:
+          name: data
+          path: site/src/data/
+          
+      - name: Build
+        run: npm run build --prefix site
+
+      # upload to GitHub Pages (dist = distribution)
+      # Hey Pages, pick it up
+      - name: Upload release candidate
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "site/dist"
+
+  #  copy pasta from GitHub
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # this is what we called the build step
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
